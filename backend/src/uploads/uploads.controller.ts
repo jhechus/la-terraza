@@ -2,41 +2,10 @@ import {
   Controller, Post, UploadedFile, UseGuards, UseInterceptors, BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import { memoryStorage } from 'multer';
 import { extname, join } from 'path';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-
-// En producción (Cloudinary configurado) usa cloud storage; en dev usa disco local.
-const isCloudinaryConfigured =
-  !!process.env.CLOUDINARY_CLOUD_NAME &&
-  !!process.env.CLOUDINARY_API_KEY &&
-  !!process.env.CLOUDINARY_API_SECRET;
-
-function buildStorageEngine() {
-  if (isCloudinaryConfigured) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const cloudinary = require('cloudinary').v2;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { CloudinaryStorage } = require('multer-storage-cloudinary');
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key:    process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
-    return new CloudinaryStorage({
-      cloudinary,
-      params: { folder: 'la-terraza', allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'] },
-    });
-  }
-
-  return diskStorage({
-    destination: join(process.cwd(), 'uploads'),
-    filename: (_req, file, cb) => {
-      const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      cb(null, unique + extname(file.originalname));
-    },
-  });
-}
+import * as fs from 'fs';
 
 @Controller('uploads')
 export class UploadsController {
@@ -44,7 +13,7 @@ export class UploadsController {
   @Post('image')
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: buildStorageEngine(),
+      storage: memoryStorage(),
       fileFilter: (_req, file, cb) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
           cb(new BadRequestException('Solo se permiten imágenes'), false);
@@ -55,14 +24,37 @@ export class UploadsController {
       limits: { fileSize: 5 * 1024 * 1024 },
     }),
   )
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
     if (!file) throw new BadRequestException('No se recibió ningún archivo');
 
-    // Cloudinary devuelve file.path como URL completa; disco local devuelve file.filename
-    const url = isCloudinaryConfigured
-      ? (file as any).path
-      : `/uploads/${file.filename}`;
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey    = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-    return { url, filename: file.filename ?? file.originalname };
+    if (cloudName && apiKey && apiSecret) {
+      // Producción: subir a Cloudinary v2
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const cloudinary = require('cloudinary').v2;
+      cloudinary.config({ cloud_name: cloudName, api_key: apiKey, api_secret: apiSecret });
+
+      const result = await new Promise<any>((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream({ folder: 'la-terraza' }, (error: any, res: any) => {
+            if (error) reject(error);
+            else resolve(res);
+          })
+          .end(file.buffer);
+      });
+
+      return { url: result.secure_url, filename: result.public_id };
+    }
+
+    // Desarrollo: guardar en disco local
+    const unique   = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const filename = unique + extname(file.originalname);
+    const dir      = join(process.cwd(), 'uploads');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(join(dir, filename), file.buffer);
+    return { url: `/uploads/${filename}`, filename };
   }
 }
