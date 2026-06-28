@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Restaurant {
+  id              Int      @id @default(1)
+  nombre          String   @default("La Terraza")
+  slogan          String   @default("Una experiencia que empieza desde la primera vista")
+  descripcion     String   @default("")
+  logo            String?
+  direccion       String   @default("")
+  telefono        String   @default("")
+  whatsapp        String   @default("")
+  correo          String   @default("")
+  horarios        Json     @default("{}")
+  redesSociales   Json     @default("{}")
+  colorPrimario   String   @default("#1a1a2e")
+  colorSecundario String   @default("#c9a84c")
+  colorAcento     String   @default("#e94560")
+  metaDescripcion String   @default("")
+  metaKeywords    String   @default("")
+  ciudad          String   @default("")
+  pais            String   @default("")
+  coordenadas     Json?
+  updatedAt       DateTime @updatedAt
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  nombre    String
+  icono     String?
+  orden     Int       @default(0)
+  activa    Boolean   @default(true)
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  precio      Decimal  @db.Decimal(10, 2)
+  imagen      String?
+  disponible  Boolean  @default(true)
+  destacado   Boolean  @default(false)
+  orden       Int      @default(0)
+  categoria   Category @relation(fields: [categoriaId], references: [id], onDelete: Cascade)
+  categoriaId Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Reservation {
+  id            Int               @id @default(autoincrement())
+  nombreCliente String
+  telefono      String
+  correo        String?
+  fecha         DateTime          @db.Date
+  hora          String
+  personas      Int
+  comentarios   String?
+  estado        ReservationStatus @default(PENDIENTE)
+  notaAdmin     String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  email     String   @unique
+  password  String
+  rol       UserRole @default(ADMIN)
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ReservationStatus {
+  PENDIENTE
+  CONFIRMADA
+  CANCELADA
+  COMPLETADA
+}
+
+enum UserRole {
+  ADMIN
+  STAFF
+}

@@ -1,0 +1,238 @@
+<div class="menu-admin">
+  <div class="menu-admin__header">
+    <div>
+      <h1>Administración del Menú</h1>
+      <p>Gestiona categorías y productos</p>
+    </div>
+    <div class="menu-admin__header-actions">
+      <button class="btn btn-ghost btn-sm" (click)="openCategoryForm()">+ Categoría</button>
+      <button class="btn btn-primary" (click)="openProductForm()">+ Producto</button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="menu-admin__tabs">
+    <button class="menu-admin__tab" [class.active]="activeTab() === 'products'" (click)="activeTab.set('products')">
+      Productos
+    </button>
+    <button class="menu-admin__tab" [class.active]="activeTab() === 'categories'" (click)="activeTab.set('categories')">
+      Categorías
+    </button>
+  </div>
+
+  <!-- PRODUCTS TAB -->
+  @if (activeTab() === 'products') {
+    <!-- Category Filter -->
+    <div class="menu-admin__cats">
+      @for (cat of categories(); track cat.id) {
+        <button
+          class="menu-admin__cat-btn"
+          [class.active]="activeCategory() === cat.id"
+          (click)="activeCategory.set(cat.id)"
+        >
+          {{ cat.icono }} {{ cat.nombre }}
+        </button>
+      }
+    </div>
+
+    @if (loading()) {
+      <div class="skeleton" style="height: 200px; border-radius: 12px;"></div>
+    } @else {
+      <div class="menu-admin__products">
+        @if (filteredProducts.length === 0) {
+          <div class="menu-admin__empty">
+            <span>🍽️</span>
+            <p>No hay productos en esta categoría</p>
+            <button class="btn btn-primary btn-sm" (click)="openProductForm()">Agregar primer producto</button>
+          </div>
+        } @else {
+          @for (product of filteredProducts; track product.id) {
+            <div class="product-row card">
+              <div class="product-row__img">
+                <img
+                  [src]="getProductImageUrl(product.imagen)"
+                  [alt]="product.nombre"
+                />
+              </div>
+              <div class="product-row__info">
+                <h3>{{ product.nombre }}</h3>
+                <p>{{ product.descripcion }}</p>
+                <div class="product-row__meta">
+                  <span class="badge badge-gold">{{ formatPrice(product.precio) }}</span>
+                  @if (!product.disponible) {
+                    <span class="badge badge-danger">Inactivo</span>
+                  }
+                  @if (product.destacado) {
+                    <span class="badge badge-accent">⭐ Destacado</span>
+                  }
+                </div>
+              </div>
+              <div class="product-row__actions">
+                <button class="icon-btn" title="Editar" (click)="openProductForm(product)">✏️</button>
+                <button
+                  class="icon-btn"
+                  [title]="product.disponible ? 'Desactivar' : 'Activar'"
+                  (click)="toggleProductDisponible(product)"
+                >
+                  {{ product.disponible ? '👁️' : '🚫' }}
+                </button>
+                <button
+                  class="icon-btn"
+                  [title]="product.destacado ? 'Quitar destacado' : 'Marcar destacado'"
+                  (click)="toggleProductDestacado(product)"
+                >
+                  {{ product.destacado ? '⭐' : '☆' }}
+                </button>
+                <button class="icon-btn icon-btn--danger" title="Eliminar" (click)="deleteProduct(product.id)">🗑️</button>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    }
+  }
+
+  <!-- CATEGORIES TAB -->
+  @if (activeTab() === 'categories') {
+    <div class="menu-admin__categories-list">
+      @for (cat of categories(); track cat.id) {
+        <div class="cat-row card">
+          <span class="cat-row__icon">{{ cat.icono }}</span>
+          <div class="cat-row__info">
+            <strong>{{ cat.nombre }}</strong>
+            <small>{{ cat._count?.products || 0 }} productos · Orden: {{ cat.orden }}</small>
+          </div>
+          <div class="cat-row__actions">
+            <button class="icon-btn" (click)="openCategoryForm(cat)">✏️</button>
+            <button class="icon-btn icon-btn--danger" (click)="deleteCategory(cat.id)">🗑️</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- PRODUCT MODAL -->
+@if (showProductForm()) {
+  <div class="modal-overlay" (click)="closeProductForm()">
+    <div class="modal card" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h2>{{ editingProduct() ? 'Editar Producto' : 'Nuevo Producto' }}</h2>
+        <button class="modal__close" (click)="closeProductForm()">✕</button>
+      </div>
+
+      <form [formGroup]="productForm" (ngSubmit)="saveProduct()" class="modal__form">
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" formControlName="nombre" placeholder="Nombre del platillo" />
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea formControlName="descripcion" placeholder="Ingredientes, preparación..." rows="3"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Precio (MXN) *</label>
+            <input type="number" formControlName="precio" placeholder="0.00" min="0" step="0.50" />
+          </div>
+          <div class="form-group">
+            <label>Categoría *</label>
+            <select formControlName="categoriaId">
+              <option [value]="null">Seleccionar...</option>
+              @for (cat of categories(); track cat.id) {
+                <option [value]="cat.id">{{ cat.icono }} {{ cat.nombre }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="toggle-label">
+            <input type="checkbox" formControlName="disponible" />
+            <span>Disponible</span>
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" formControlName="destacado" />
+            <span>Destacado</span>
+          </label>
+        </div>
+
+        <!-- Imagen -->
+        <div class="form-group">
+          <label>Imagen del producto</label>
+          <div class="img-upload">
+            @if (!imagePreview()) {
+              <label class="img-upload__zone">
+                <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden #fileInput />
+                <span class="img-upload__icon">📷</span>
+                <span class="img-upload__text">Haz clic para subir una imagen</span>
+                <span class="img-upload__hint">JPG, PNG, WebP — máx 5 MB</span>
+              </label>
+            } @else {
+              <div class="img-upload__preview">
+                <img [src]="imagePreview()!" alt="Vista previa" />
+                @if (uploadingImage()) {
+                  <div class="img-upload__overlay">
+                    <span class="img-upload__spinner"></span>
+                    <span>Subiendo...</span>
+                  </div>
+                } @else {
+                  <button type="button" class="img-upload__remove" (click)="removeImage()" title="Quitar imagen">✕</button>
+                  <label class="img-upload__change" title="Cambiar imagen">
+                    <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
+                    <span>✏️</span>
+                  </label>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn-ghost" (click)="closeProductForm()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="saving()">
+            {{ saving() ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- CATEGORY MODAL -->
+@if (showCategoryForm()) {
+  <div class="modal-overlay" (click)="closeCategoryForm()">
+    <div class="modal modal--sm card" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h2>{{ editingCategory() ? 'Editar Categoría' : 'Nueva Categoría' }}</h2>
+        <button class="modal__close" (click)="closeCategoryForm()">✕</button>
+      </div>
+
+      <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()" class="modal__form">
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" formControlName="nombre" placeholder="Ej: Entradas" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Emoji / Icono</label>
+            <input type="text" formControlName="icono" placeholder="🍽️" />
+          </div>
+          <div class="form-group">
+            <label>Orden</label>
+            <input type="number" formControlName="orden" min="0" />
+          </div>
+        </div>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn-ghost" (click)="closeCategoryForm()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="saving()">
+            {{ saving() ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

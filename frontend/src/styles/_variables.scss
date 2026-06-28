@@ -1,0 +1,100 @@
+// ============================================================
+// LA TERRAZA — Design Tokens
+// Cambia estos valores para adaptar la plantilla a otro negocio
+// ============================================================
+
+// Colors (overrideable via CSS custom properties)
+:root {
+  --color-primary:    #1a1a2e;
+  --color-secondary:  #c9a84c;
+  --color-accent:     #e94560;
+  --color-bg:         #0f0f1a;
+  --color-surface:    #16213e;
+  --color-surface-2:  #1a2744;
+  --color-text:       #f0ece4;
+  --color-text-muted: #9a8fa0;
+  --color-border:     rgba(201, 168, 76, 0.2);
+  --color-overlay:    rgba(15, 15, 26, 0.85);
+
+  // Typography
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Inter', 'Segoe UI', sans-serif;
+
+  // Spacing
+  --section-py:    5rem;
+  --container-max: 1280px;
+
+  // Radius
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  16px;
+  --radius-xl:  24px;
+  --radius-full: 9999px;
+
+  // Shadows
+  --shadow-card:  0 4px 24px rgba(0,0,0,0.4);
+  --shadow-hover: 0 8px 40px rgba(201,168,76,0.15);
+  --shadow-glow:  0 0 40px rgba(201,168,76,0.1);
+
+  // Transitions
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Breakpoints
+$bp-sm:  576px;
+$bp-md:  768px;
+$bp-lg:  1024px;
+$bp-xl:  1280px;
+$bp-xxl: 1536px;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@mixin section-padding {
+  padding: var(--section-py) 0;
+}
+
+@mixin gold-gradient {
+  background: linear-gradient(135deg, #c9a84c 0%, #f0d080 50%, #c9a84c 100%);
+}
+
+@mixin text-gradient($from: #c9a84c, $to: #f0d080) {
+  background: linear-gradient(135deg, $from, $to);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@mixin glass-card {
+  background: rgba(22, 33, 62, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+@mixin hover-lift {
+  transition: var(--transition);
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+}
+
+@mixin responsive($bp) {
+  @if $bp == sm    { @media (max-width: #{$bp-sm})  { @content; } }
+  @else if $bp == md  { @media (max-width: #{$bp-md})  { @content; } }
+  @else if $bp == lg  { @media (max-width: #{$bp-lg})  { @content; } }
+  @else if $bp == xl  { @media (max-width: #{$bp-xl})  { @content; } }
+}

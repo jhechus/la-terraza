@@ -1,0 +1,166 @@
+<div class="reservations-page">
+  <!-- Hero -->
+  <div class="reservations-page__hero">
+    <img src="https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=1400&q=80" alt="Reservaciones" />
+    <div class="reservations-page__hero-overlay">
+      <h1>Reserva tu Mesa</h1>
+      <p>Garantiza tu lugar para una noche que no olvidarás</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="reservations-page__layout">
+
+        <!-- Form -->
+        <div class="reservations-page__form-wrap">
+          @if (!submitted()) {
+            <div class="card reservations-page__card">
+              <div class="reservations-page__card-header">
+                <h2>Hacer una Reservación</h2>
+                <p>Completa el formulario y nos pondremos en contacto para confirmar tu reserva.</p>
+              </div>
+
+              <form [formGroup]="form" (ngSubmit)="onSubmit()" class="reservations-page__form">
+
+                <div class="form-group">
+                  <label>Nombre completo *</label>
+                  <input type="text" formControlName="nombreCliente" placeholder="Tu nombre" />
+                  @if (hasError('nombreCliente')) {
+                    <span class="form-error">El nombre es requerido (mínimo 2 caracteres)</span>
+                  }
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Teléfono *</label>
+                    <input type="tel" formControlName="telefono" placeholder="+52 55 1234 5678" />
+                    @if (hasError('telefono')) {
+                      <span class="form-error">Ingresa un teléfono válido</span>
+                    }
+                  </div>
+
+                  <div class="form-group">
+                    <label>Correo electrónico</label>
+                    <input type="email" formControlName="correo" placeholder="tu@correo.com" />
+                    @if (hasError('correo')) {
+                      <span class="form-error">Correo inválido</span>
+                    }
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Fecha *</label>
+                    <input type="date" formControlName="fecha" [min]="minDate" />
+                    @if (hasError('fecha')) {
+                      <span class="form-error">Selecciona una fecha</span>
+                    }
+                  </div>
+
+                  <div class="form-group">
+                    <label>Hora *</label>
+                    <select formControlName="hora">
+                      <option value="">Selecciona</option>
+                      @for (slot of timeSlots; track slot) {
+                        <option [value]="slot">{{ slot }}</option>
+                      }
+                    </select>
+                    @if (hasError('hora')) {
+                      <span class="form-error">Selecciona un horario</span>
+                    }
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Número de personas *</label>
+                  <div class="persons-selector">
+                    @for (n of [1,2,3,4,5,6,7,8,10,12]; track n) {
+                      <button
+                        type="button"
+                        class="persons-btn"
+                        [class.active]="form.value.personas === n"
+                        (click)="form.patchValue({ personas: n })"
+                      >
+                        {{ n }}
+                      </button>
+                    }
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Comentarios o solicitudes especiales</label>
+                  <textarea formControlName="comentarios" placeholder="Ejemplo: celebración de cumpleaños, alergias, zona preferida..."></textarea>
+                </div>
+
+                @if (error()) {
+                  <div class="reservations-page__error">{{ error() }}</div>
+                }
+
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;" [disabled]="loading()">
+                  @if (loading()) { Enviando... } @else { Confirmar Reservación }
+                </button>
+              </form>
+            </div>
+
+          } @else {
+            <!-- Success -->
+            <div class="card reservations-page__success animate-scale-in">
+              <div class="reservations-page__success-icon">✅</div>
+              <h2>¡Reservación Enviada!</h2>
+              <p>
+                Hemos recibido tu solicitud. Te contactaremos en breve al número proporcionado para confirmar tu reserva.
+              </p>
+              <div class="reservations-page__success-actions">
+                <button class="btn btn-primary" (click)="resetForm()">Nueva Reservación</button>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Info Sidebar -->
+        <div class="reservations-page__info">
+          <div class="card reservations-page__info-card">
+            <h3>Información</h3>
+
+            <div class="reservations-page__info-item">
+              <span>📅</span>
+              <div>
+                <strong>Horarios de reserva</strong>
+                <p>Mar – Jue: 13:00 - 22:30</p>
+                <p>Vie: 13:00 - 00:30</p>
+                <p>Sáb: 12:00 - 00:30</p>
+                <p>Dom: 12:00 - 21:30</p>
+              </div>
+            </div>
+
+            <div class="reservations-page__info-item">
+              <span>👥</span>
+              <div>
+                <strong>Grupos grandes</strong>
+                <p>Para grupos mayores de 10 personas, contáctanos directamente.</p>
+              </div>
+            </div>
+
+            <div class="reservations-page__info-item">
+              <span>⏱️</span>
+              <div>
+                <strong>Tiempo de espera</strong>
+                <p>Confirmamos tu reserva en menos de 2 horas durante horario de atención.</p>
+              </div>
+            </div>
+
+            <div class="reservations-page__info-item">
+              <span>❌</span>
+              <div>
+                <strong>Cancelaciones</strong>
+                <p>Puedes cancelar hasta 2 horas antes sin ningún costo.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

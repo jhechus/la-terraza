@@ -1,0 +1,89 @@
+<div class="contact-page">
+  <div class="contact-page__hero">
+    <img src="https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=1400&q=80" alt="Contacto" />
+    <div class="contact-page__hero-overlay">
+      <h1>Contacto</h1>
+      <p>Estamos aquí para ayudarte</p>
+    </div>
+  </div>
+
+  @if (restaurant(); as r) {
+  <section class="section">
+    <div class="container">
+      <div class="contact-page__grid">
+
+        <div class="contact-page__info card">
+          <h2>Encuéntranos</h2>
+
+          <div class="contact-page__item">
+            <span class="contact-page__item-icon">📍</span>
+            <div>
+              <strong>Dirección</strong>
+              <p>{{ r.direccion }}</p>
+            </div>
+          </div>
+
+          <div class="contact-page__item">
+            <span class="contact-page__item-icon">📞</span>
+            <div>
+              <strong>Teléfono</strong>
+              <p><a [href]="'tel:' + r.telefono">{{ r.telefono }}</a></p>
+            </div>
+          </div>
+
+          <div class="contact-page__item">
+            <span class="contact-page__item-icon">✉️</span>
+            <div>
+              <strong>Correo</strong>
+              <p><a [href]="'mailto:' + r.correo">{{ r.correo }}</a></p>
+            </div>
+          </div>
+
+          @if (r.whatsapp) {
+            <a
+              [href]="'https://wa.me/' + r.whatsapp"
+              target="_blank"
+              class="btn btn-primary"
+              style="margin-top: 1rem; width: 100%; justify-content: center;"
+            >
+              💬 Escribir por WhatsApp
+            </a>
+          }
+
+          <!-- Social -->
+          @if (r.redesSociales) {
+            <div class="contact-page__social">
+              @if (r.redesSociales.instagram) {
+                <a [href]="r.redesSociales.instagram" target="_blank" class="contact-page__social-link">Instagram</a>
+              }
+              @if (r.redesSociales.facebook) {
+                <a [href]="r.redesSociales.facebook" target="_blank" class="contact-page__social-link">Facebook</a>
+              }
+              @if (r.redesSociales.tiktok) {
+                <a [href]="r.redesSociales.tiktok" target="_blank" class="contact-page__social-link">TikTok</a>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="contact-page__map card">
+          <div class="contact-page__map-inner">
+            <span>🗺️</span>
+            <p>{{ r.nombre }}</p>
+            <small>{{ r.direccion }}</small>
+            <a
+              [href]="'https://maps.google.com/?q=' + r.direccion"
+              target="_blank"
+              class="btn btn-outline"
+              style="margin-top: 1rem;"
+            >
+              Ver en Google Maps
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  }
+</div>

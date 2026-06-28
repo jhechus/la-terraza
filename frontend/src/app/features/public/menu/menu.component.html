@@ -1,0 +1,76 @@
+<div class="menu-page">
+  <!-- Hero Banner -->
+  <div class="menu-page__hero">
+    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80" alt="Menú" />
+    <div class="menu-page__hero-overlay">
+      <h1>Nuestra Carta</h1>
+      <p>Ingredientes frescos, sabores únicos, experiencias memorables</p>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="section">
+    <div class="container">
+
+      @if (loading()) {
+        <div class="menu-page__loading">
+          <div class="skeleton" style="height: 48px; width: 600px; max-width: 100%; margin: 0 auto 2rem;"></div>
+          <div class="menu-page__grid">
+            @for (i of [1,2,3,4,6,8]; track i) {
+              <div class="skeleton" style="height: 340px; border-radius: 16px;"></div>
+            }
+          </div>
+        </div>
+      } @else {
+
+        <!-- Category Tabs -->
+        <div class="menu-page__cats">
+          @for (cat of categories(); track cat.id) {
+            <button
+              class="menu-page__cat-btn"
+              [class.active]="activeCategory() === cat.id"
+              (click)="selectCategory(cat.id)"
+            >
+              <span>{{ cat.icono }}</span>
+              <span>{{ cat.nombre }}</span>
+            </button>
+          }
+        </div>
+
+        <!-- Products Grid -->
+        <div class="menu-page__grid stagger-children">
+          @for (product of filteredProducts; track product.id) {
+            <div class="menu-product card">
+              <div class="menu-product__img">
+                <img
+                  [src]="getImageUrl(product.imagen)"
+                  [alt]="product.nombre"
+                  loading="lazy"
+                />
+                @if (product.destacado) {
+                  <span class="menu-product__badge">⭐ Destacado</span>
+                }
+              </div>
+              <div class="menu-product__body">
+                <h3 class="menu-product__name">{{ product.nombre }}</h3>
+                @if (product.descripcion) {
+                  <p class="menu-product__desc">{{ product.descripcion }}</p>
+                }
+                <div class="menu-product__footer">
+                  <span class="menu-product__price">{{ formatPrice(product.precio) }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        @if (filteredProducts.length === 0) {
+          <div class="menu-page__empty">
+            <span>🍽️</span>
+            <p>No hay platillos disponibles en esta categoría.</p>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

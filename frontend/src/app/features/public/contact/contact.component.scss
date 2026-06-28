@@ -1,0 +1,71 @@
+@use '../../../../styles/variables' as *;
+
+.contact-page {
+  padding-top: 70px;
+
+  &__hero {
+    position: relative; height: 40vh; min-height: 280px; overflow: hidden;
+    img { width: 100%; height: 100%; object-fit: cover; }
+    &-overlay {
+      position: absolute; inset: 0; background: rgba(15,15,26,0.78);
+      @include flex-center; flex-direction: column; gap: 0.75rem; text-align: center;
+      h1 { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.5rem); @include text-gradient; }
+      p  { color: rgba(255,255,255,0.75); font-size: 1rem; }
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+
+    @include responsive(lg) { grid-template-columns: 1fr; }
+  }
+
+  &__info {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    h2 { font-family: var(--font-display); color: var(--color-secondary); font-size: 1.5rem; }
+  }
+
+  &__item {
+    display: flex; gap: 1rem; align-items: flex-start;
+
+    &-icon { font-size: 1.25rem; flex-shrink: 0; }
+
+    strong { display: block; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-secondary); margin-bottom: 0.25rem; }
+    p { font-size: 0.9rem; color: var(--color-text-muted); }
+    a { color: var(--color-text-muted); transition: var(--transition); &:hover { color: var(--color-secondary); } }
+  }
+
+  &__social {
+    display: flex; gap: 0.75rem; flex-wrap: wrap;
+  }
+
+  &__social-link {
+    padding: 0.4rem 1rem;
+    border-radius: var(--radius-full);
+    background: rgba(201,168,76,0.1);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    transition: var(--transition);
+
+    &:hover { background: rgba(201,168,76,0.2); color: var(--color-secondary); border-color: var(--color-secondary); }
+  }
+
+  &__map {
+    min-height: 400px;
+    @include flex-center;
+
+    &-inner {
+      @include flex-center; flex-direction: column; gap: 0.5rem; color: var(--color-text-muted); text-align: center;
+      span { font-size: 3rem; }
+      p { font-size: 1.1rem; font-weight: 600; color: var(--color-text); }
+      small { font-size: 0.85rem; }
+    }
+  }
+}

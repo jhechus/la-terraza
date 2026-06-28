@@ -1,0 +1,60 @@
+@use '../../../../styles/variables' as *;
+
+.settings {
+  max-width: 900px;
+
+  &__header {
+    margin-bottom: 2rem;
+    h1 { font-family: var(--font-display); font-size: 1.75rem; @include text-gradient; margin-bottom: 0.25rem; }
+    p  { color: var(--color-text-muted); font-size: 0.9rem; }
+  }
+
+  &__section {
+    padding: 1.75rem; margin-bottom: 1.5rem;
+    h2 { font-family: var(--font-display); font-size: 1.1rem; color: var(--color-secondary); margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-border); }
+  }
+
+  &__grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;
+    @include responsive(sm) { grid-template-columns: 1fr; }
+  }
+
+  &__horarios {
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+
+  &__colors {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+    @include responsive(sm) { grid-template-columns: 1fr; }
+  }
+
+  &__actions {
+    display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-top: 0.5rem;
+  }
+}
+
+.horario-row {
+  display: flex; align-items: center; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+
+  input[type="time"] {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    padding: 0.4rem 0.6rem; color: var(--color-text); font-size: 0.875rem; width: 110px; outline: none;
+    &:focus { border-color: var(--color-secondary); }
+  }
+}
+
+.horario-day { min-width: 100px; font-size: 0.875rem; font-weight: 500; color: var(--color-text); }
+.horario-sep { color: var(--color-text-muted); }
+
+.color-picker {
+  display: flex; flex-direction: column; gap: 0.5rem;
+  label { font-size: 0.8rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  &__input {
+    display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--color-border); border-radius: var(--radius-md);
+
+    input[type="color"] { width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: none; padding: 0; }
+    span { font-size: 0.85rem; color: var(--color-text-muted); font-family: monospace; }
+  }
+}

@@ -1,0 +1,71 @@
+@use '../../../../styles/variables' as *;
+
+.login-page {
+  min-height: 100vh;
+  @include flex-center;
+  position: relative;
+  overflow: hidden;
+
+  &__bg {
+    position: absolute;
+    inset: 0;
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15,15,26,0.88);
+  }
+
+  &__card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem;
+    margin: 1rem;
+  }
+
+  &__header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  &__title {
+    font-size: 2rem;
+    @include text-gradient;
+    margin-bottom: 0.25rem;
+  }
+
+  &__sub {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  &__error {
+    padding: 0.875rem 1rem;
+    background: rgba(233,69,96,0.1);
+    border: 1px solid rgba(233,69,96,0.3);
+    border-radius: var(--radius-md);
+    color: var(--color-accent);
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  &__footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    opacity: 0.6;
+  }
+}

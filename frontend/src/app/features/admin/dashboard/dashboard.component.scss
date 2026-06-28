@@ -1,0 +1,145 @@
+@use '../../../../styles/variables' as *;
+
+.dashboard {
+  max-width: 1200px;
+
+  &__header {
+    margin-bottom: 2rem;
+    h1 { font-family: var(--font-display); font-size: 1.75rem; @include text-gradient; margin-bottom: 0.25rem; }
+    p  { color: var(--color-text-muted); font-size: 0.9rem; }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    @include responsive(lg) { grid-template-columns: repeat(2, 1fr); }
+    @include responsive(sm) { grid-template-columns: 1fr; }
+  }
+
+  &__section {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      h2 { font-family: var(--font-display); font-size: 1.2rem; }
+    }
+  }
+
+  &__loading { min-height: 150px; }
+
+  &__empty {
+    @include flex-center;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 3rem;
+    color: var(--color-text-muted);
+    span { font-size: 2.5rem; }
+    p { font-size: 0.9rem; }
+  }
+
+  &__quick {
+    h2 { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 1rem; }
+
+    &-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+
+      @include responsive(lg) { grid-template-columns: repeat(2, 1fr); }
+      @include responsive(sm) { grid-template-columns: 1fr; }
+    }
+  }
+}
+
+// Stat Cards
+.stat-card {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: var(--transition);
+
+  &:hover { transform: translateY(-2px); }
+
+  &__icon { font-size: 2rem; }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__value {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: var(--font-display);
+    color: var(--color-secondary);
+    line-height: 1;
+  }
+
+  &__label { font-size: 0.8rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  &--warning  .stat-card__value { color: #fbbf24; }
+  &--success  .stat-card__value { color: #22c55e; }
+  &--gold     .stat-card__value { color: var(--color-secondary); }
+  &--accent   .stat-card__value { color: var(--color-accent); }
+  &--info     .stat-card__value { color: #60a5fa; }
+}
+
+// Table
+.table-wrap { overflow-x: auto; }
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  td {
+    padding: 1rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    vertical-align: middle;
+  }
+
+  tr:hover td { background: rgba(255,255,255,0.02); }
+}
+
+.table-client {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  strong { color: var(--color-text); }
+  small  { color: var(--color-text-muted); font-size: 0.78rem; }
+}
+
+// Quick actions
+.quick-action {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  transition: var(--transition);
+  cursor: pointer;
+
+  &:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--color-secondary); }
+
+  span   { font-size: 1.75rem; }
+  strong { font-size: 0.95rem; color: var(--color-text); }
+  small  { font-size: 0.8rem; color: var(--color-text-muted); }
+}

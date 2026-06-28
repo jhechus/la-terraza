@@ -1,0 +1,80 @@
+<div class="about-page">
+  <!-- Hero -->
+  <div class="about-page__hero">
+    <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=1400&q=80" alt="Nosotros" />
+    <div class="about-page__hero-overlay">
+      <h1>Nuestra Historia</h1>
+      <p>Pasión, sabor y una experiencia para compartir</p>
+    </div>
+  </div>
+
+  @if (restaurant(); as r) {
+
+  <!-- Historia -->
+  <section class="section">
+    <div class="container">
+      <div class="about-page__story">
+        <div class="about-page__story-content">
+          <span class="section__eyebrow">Quiénes somos</span>
+          <h2 class="section-title">{{ r.nombre }}</h2>
+          <div class="gold-divider" style="margin: 1.5rem 0;"></div>
+          <p>{{ r.descripcion }}</p>
+          <p style="margin-top: 1rem;">
+            Desde 2018, hemos servido a miles de comensales que buscan algo más que una comida — buscan un momento. Nuestro equipo de chefs trabaja con ingredientes frescos de temporada para crear platillos que sorprendan y deleiten cada visita.
+          </p>
+          <a routerLink="/reservaciones" class="btn btn-primary" style="margin-top: 2rem;">Reserva tu Mesa</a>
+        </div>
+        <div class="about-page__story-imgs">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80" alt="Restaurante" />
+          <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&q=80" alt="Cócteles" style="margin-top: 1rem;" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Valores -->
+  <section class="section" style="background: var(--color-surface);">
+    <div class="container">
+      <div class="text-center" style="margin-bottom: 3rem;">
+        <span class="section__eyebrow">Lo que nos define</span>
+        <h2 class="section-title">Nuestros Valores</h2>
+        <div class="gold-divider" style="margin: 1.25rem auto;"></div>
+      </div>
+      <div class="about-page__values stagger-children">
+        @for (val of values; track val.title) {
+          <div class="about-page__value card">
+            <span class="about-page__value-icon">{{ val.icon }}</span>
+            <h3>{{ val.title }}</h3>
+            <p>{{ val.desc }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Equipo -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center" style="margin-bottom: 3rem;">
+        <span class="section__eyebrow">Las personas detrás</span>
+        <h2 class="section-title">Nuestro Equipo</h2>
+        <div class="gold-divider" style="margin: 1.25rem auto;"></div>
+      </div>
+      <div class="about-page__team stagger-children">
+        @for (member of team; track member.nombre) {
+          <div class="about-page__member card">
+            <div class="about-page__member-img">
+              <img [src]="member.img" [alt]="member.nombre" />
+            </div>
+            <div class="about-page__member-info">
+              <h3>{{ member.nombre }}</h3>
+              <span class="badge badge-gold">{{ member.rol }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  }
+</div>

@@ -1,0 +1,53 @@
+<nav class="navbar" [class.scrolled]="scrolled()">
+  <div class="navbar__container">
+    <!-- Logo -->
+    <a routerLink="/" class="navbar__brand" (click)="closeMenu()">
+      <span class="navbar__brand-name">{{ restaurantName() }}</span>
+    </a>
+
+    <!-- Desktop Links -->
+    <ul class="navbar__links">
+      @for (link of navLinks; track link.path) {
+        <li>
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: link.exact }"
+            class="navbar__link"
+          >
+            {{ link.label }}
+          </a>
+        </li>
+      }
+    </ul>
+
+    <!-- CTA Button -->
+    <a routerLink="/reservaciones" class="btn btn-primary btn-sm hide-mobile">
+      Reservar Mesa
+    </a>
+
+    <!-- Hamburger -->
+    <button class="navbar__hamburger" (click)="toggleMenu()" [class.open]="menuOpen()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  @if (menuOpen()) {
+    <div class="navbar__mobile" (click)="closeMenu()">
+      @for (link of navLinks; track link.path) {
+        <a
+          [routerLink]="link.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: link.exact }"
+          class="navbar__mobile-link"
+        >
+          {{ link.label }}
+        </a>
+      }
+      <a routerLink="/reservaciones" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:1rem;">
+        Reservar Mesa
+      </a>
+    </div>
+  }
+</nav>

@@ -1,0 +1,271 @@
+@if (restaurant(); as r) {
+
+<!-- ============================================================ -->
+<!-- HERO -->
+<!-- ============================================================ -->
+<section class="hero">
+  <div class="hero__bg">
+    <img
+      src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=85"
+      alt="La Terraza"
+      class="hero__bg-img"
+    />
+    <div class="hero__overlay"></div>
+  </div>
+
+  <div class="hero__content container">
+    <div class="hero__text animate-fade-in-up">
+      <span class="hero__eyebrow">Bienvenido a</span>
+      <h1 class="hero__title">{{ r.nombre }}</h1>
+      <div class="gold-divider" style="margin: 1.5rem 0;"></div>
+      <p class="hero__subtitle">{{ r.slogan }}</p>
+      <p class="hero__desc">
+        Descubre nuestra carta, reserva tu mesa y disfruta una experiencia creada para compartir.
+      </p>
+      <div class="hero__actions">
+        <a routerLink="/menu" class="btn btn-primary btn-lg">Ver Menú</a>
+        <a routerLink="/reservaciones" class="btn btn-outline btn-lg">Reservar Mesa</a>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="hero__scroll">
+      <span>Descubre más</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- EXPERIENCIA -->
+<!-- ============================================================ -->
+<section class="section experience">
+  <div class="container">
+    <div class="experience__grid">
+      <div class="experience__images">
+        <div class="experience__img-main">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&q=80" alt="Experiencia gastronómica" />
+        </div>
+        <div class="experience__img-float card">
+          <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400&q=80" alt="Ambiente" />
+          <div class="experience__badge">
+            <span class="experience__badge-num">+5</span>
+            <span class="experience__badge-txt">Años de experiencia</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="experience__content">
+        <span class="section__eyebrow">Nuestra Historia</span>
+        <h2 class="section-title experience__title">Una experiencia<br><em>que no olvidarás</em></h2>
+        <div class="gold-divider" style="margin: 1.5rem 0 1.5rem;"></div>
+        <p class="experience__text">
+          {{ r.descripcion }}
+        </p>
+
+        <div class="experience__stats">
+          <div class="experience__stat">
+            <span class="experience__stat-num">+200</span>
+            <span class="experience__stat-label">Platillos al año</span>
+          </div>
+          <div class="experience__stat">
+            <span class="experience__stat-num">+50</span>
+            <span class="experience__stat-label">Cócteles únicos</span>
+          </div>
+          <div class="experience__stat">
+            <span class="experience__stat-num">5★</span>
+            <span class="experience__stat-label">Calificación</span>
+          </div>
+        </div>
+
+        <a routerLink="/nosotros" class="btn btn-outline">Conoce Más</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- PLATILLOS DESTACADOS -->
+<!-- ============================================================ -->
+@if (featuredProducts().length > 0) {
+<section class="section featured">
+  <div class="container">
+    <div class="text-center section__header">
+      <span class="section__eyebrow">Lo mejor de nuestra cocina</span>
+      <h2 class="section-title">Platillos Destacados</h2>
+      <div class="gold-divider" style="margin: 1.25rem auto;"></div>
+      <p class="section__desc">Selección especial de nuestros chefs para brindarte la mejor experiencia.</p>
+    </div>
+
+    <div class="featured__grid stagger-children">
+      @for (product of featuredProducts().slice(0, 6); track product.id) {
+        <div class="featured__card card">
+          <div class="featured__card-img">
+            <img
+              [src]="getImageUrl(product.imagen)"
+              [alt]="product.nombre"
+            />
+            <div class="featured__card-overlay">
+              <a routerLink="/menu" class="btn btn-primary btn-sm">Ver Menú</a>
+            </div>
+          </div>
+          <div class="featured__card-body">
+            <span class="featured__card-category badge badge-gold">{{ product.categoria?.nombre }}</span>
+            <h3 class="featured__card-name">{{ product.nombre }}</h3>
+            <p class="featured__card-desc">{{ product.descripcion }}</p>
+            <div class="featured__card-footer">
+              <span class="featured__card-price">{{ formatPrice(product.precio) }}</span>
+              <span class="featured__card-tag">⭐ Destacado</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="text-center" style="margin-top: 3rem;">
+      <a routerLink="/menu" class="btn btn-outline btn-lg">Ver Carta Completa</a>
+    </div>
+  </div>
+</section>
+}
+
+
+<!-- ============================================================ -->
+<!-- CATEGORÍAS DEL MENÚ -->
+<!-- ============================================================ -->
+<section class="section menu-preview">
+  <div class="container">
+    <div class="text-center section__header">
+      <span class="section__eyebrow">Lo que ofrecemos</span>
+      <h2 class="section-title">Nuestra Carta</h2>
+      <div class="gold-divider" style="margin: 1.25rem auto;"></div>
+    </div>
+
+    <div class="menu-preview__cats">
+      @for (cat of categories(); track cat.id) {
+        <a routerLink="/menu" class="menu-preview__cat card">
+          <span class="menu-preview__cat-icon">{{ cat.icono }}</span>
+          <h3 class="menu-preview__cat-name">{{ cat.nombre }}</h3>
+          <span class="menu-preview__cat-count">{{ cat._count?.products || 0 }} opciones</span>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- GALERÍA -->
+<!-- ============================================================ -->
+<section class="section gallery">
+  <div class="container">
+    <div class="text-center section__header">
+      <span class="section__eyebrow">Momentos únicos</span>
+      <h2 class="section-title">Nuestra Galería</h2>
+      <div class="gold-divider" style="margin: 1.25rem auto;"></div>
+    </div>
+
+    <div class="gallery__grid">
+      @for (img of galleryImages; track img.src; let i = $index) {
+        <div class="gallery__item" [class.gallery__item--large]="i === 0 || i === 5">
+          <img [src]="img.src" [alt]="img.alt" loading="lazy" />
+          <div class="gallery__item-overlay">
+            <span>{{ img.alt }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- RESERVACIONES CTA -->
+<!-- ============================================================ -->
+<section class="section reservation-cta">
+  <div class="reservation-cta__bg">
+    <img src="https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=1600&q=80" alt="Reserva tu mesa" />
+    <div class="reservation-cta__overlay"></div>
+  </div>
+  <div class="container reservation-cta__content">
+    <span class="section__eyebrow" style="color: var(--color-secondary);">Haz tu reservación</span>
+    <h2 class="section-title" style="color: #fff;">Reserva tu Mesa Hoy</h2>
+    <div class="gold-divider" style="margin: 1.5rem auto;"></div>
+    <p style="color: rgba(255,255,255,0.8); max-width: 500px; margin: 0 auto 2rem; font-size: 1.05rem;">
+      Garantiza tu lugar y disfruta de una noche especial. Reservaciones para grupos grandes también disponibles.
+    </p>
+    <a routerLink="/reservaciones" class="btn btn-primary btn-lg">Hacer Reservación</a>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- UBICACIÓN Y HORARIOS -->
+<!-- ============================================================ -->
+<section class="section location">
+  <div class="container">
+    <div class="text-center section__header">
+      <span class="section__eyebrow">Visítanos</span>
+      <h2 class="section-title">Ubicación y Horarios</h2>
+      <div class="gold-divider" style="margin: 1.25rem auto;"></div>
+    </div>
+
+    <div class="location__grid">
+      <div class="location__info card">
+        <div class="location__info-item">
+          <span class="location__info-icon">📍</span>
+          <div>
+            <strong>Dirección</strong>
+            <p>{{ r.direccion }}</p>
+          </div>
+        </div>
+        <div class="location__info-item">
+          <span class="location__info-icon">📞</span>
+          <div>
+            <strong>Teléfono</strong>
+            <p><a [href]="'tel:' + r.telefono">{{ r.telefono }}</a></p>
+          </div>
+        </div>
+        @if (r.whatsapp) {
+          <div class="location__info-item">
+            <span class="location__info-icon">💬</span>
+            <div>
+              <strong>WhatsApp</strong>
+              <p><a [href]="'https://wa.me/' + r.whatsapp" target="_blank">Escríbenos al WhatsApp</a></p>
+            </div>
+          </div>
+        }
+        <div class="location__horarios">
+          <strong class="location__horarios-title">Horarios de Atención</strong>
+          <ul>
+            <li><span>Lunes</span><span class="closed">Cerrado</span></li>
+            <li><span>Mar - Jue</span><span>13:00 - 23:00</span></li>
+            <li><span>Viernes</span><span>13:00 - 01:00</span></li>
+            <li><span>Sábado</span><span>12:00 - 01:00</span></li>
+            <li><span>Domingo</span><span>12:00 - 22:00</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="location__map card">
+        <div class="location__map-placeholder">
+          <span class="location__map-icon">🗺️</span>
+          <p>Mapa interactivo</p>
+          <small>Integra Google Maps con tu API Key</small>
+          <a
+            [href]="'https://maps.google.com/?q=' + r.direccion"
+            target="_blank"
+            class="btn btn-outline btn-sm"
+            style="margin-top: 1rem;"
+          >
+            Abrir en Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+}

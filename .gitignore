@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Build outputs
+backend/dist/
+frontend/dist/
+
+# Prisma generated
+backend/generated/
+
+# Environment files (NO subir a git)
+backend/.env
+
+# Uploads (imágenes subidas por usuarios)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Angular cache
+frontend/.angular/
+
+# OS
+.DS_Store
+Thumbs.db

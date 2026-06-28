@@ -1,0 +1,56 @@
+<div class="admin-layout" [class.sidebar-collapsed]="!sidebarOpen()">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar__header">
+      <span class="sidebar__logo">La Terraza</span>
+      <button class="sidebar__toggle" (click)="toggleSidebar()">
+        {{ sidebarOpen() ? '◀' : '▶' }}
+      </button>
+    </div>
+
+    <nav class="sidebar__nav">
+      @for (item of navItems; track item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: item.exact }"
+          class="sidebar__nav-item"
+        >
+          <span class="sidebar__nav-icon">{{ item.icon }}</span>
+          @if (sidebarOpen()) {
+            <span class="sidebar__nav-label">{{ item.label }}</span>
+          }
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar__footer">
+      <button class="sidebar__btn" (click)="goToSite()">
+        <span>🌐</span>
+        @if (sidebarOpen()) { <span>Ver Sitio</span> }
+      </button>
+      <button class="sidebar__btn sidebar__btn--danger" (click)="logout()">
+        <span>🚪</span>
+        @if (sidebarOpen()) { <span>Salir</span> }
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="admin-main">
+    <!-- Topbar -->
+    <header class="admin-topbar">
+      <button class="admin-topbar__menu" (click)="toggleSidebar()">☰</button>
+      <div class="admin-topbar__title">Panel de Administración</div>
+      <div class="admin-topbar__user">
+        <span class="admin-topbar__avatar">{{ user()?.nombre?.charAt(0) }}</span>
+        <span class="admin-topbar__name hide-mobile">{{ user()?.nombre }}</span>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

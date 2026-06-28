@@ -1,0 +1,162 @@
+<div class="settings">
+  <div class="settings__header">
+    <h1>Configuración del Restaurante</h1>
+    <p>Edita la información general de tu negocio</p>
+  </div>
+
+  @if (loading()) {
+    <div class="skeleton" style="height: 600px; border-radius: 12px;"></div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <!-- Información General -->
+      <div class="settings__section card">
+        <h2>Información General</h2>
+        <div class="settings__grid">
+          <div class="form-group">
+            <label>Nombre del establecimiento *</label>
+            <input type="text" formControlName="nombre" />
+          </div>
+          <div class="form-group">
+            <label>Slogan</label>
+            <input type="text" formControlName="slogan" />
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Descripción</label>
+            <textarea formControlName="descripcion" rows="4"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contacto -->
+      <div class="settings__section card">
+        <h2>Contacto y Ubicación</h2>
+        <div class="settings__grid">
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Dirección</label>
+            <input type="text" formControlName="direccion" />
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" formControlName="telefono" />
+          </div>
+          <div class="form-group">
+            <label>WhatsApp (número sin +)</label>
+            <input type="text" formControlName="whatsapp" placeholder="5215512345678" />
+          </div>
+          <div class="form-group">
+            <label>Correo</label>
+            <input type="email" formControlName="correo" />
+          </div>
+          <div class="form-group">
+            <label>Ciudad</label>
+            <input type="text" formControlName="ciudad" />
+          </div>
+          <div class="form-group">
+            <label>País</label>
+            <input type="text" formControlName="pais" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Redes Sociales -->
+      <div class="settings__section card">
+        <h2>Redes Sociales</h2>
+        <div class="settings__grid">
+          <div class="form-group">
+            <label>Instagram (URL)</label>
+            <input type="url" formControlName="instagram" placeholder="https://instagram.com/tu-cuenta" />
+          </div>
+          <div class="form-group">
+            <label>Facebook (URL)</label>
+            <input type="url" formControlName="facebook" placeholder="https://facebook.com/tu-pagina" />
+          </div>
+          <div class="form-group">
+            <label>TikTok (URL)</label>
+            <input type="url" formControlName="tiktok" placeholder="https://tiktok.com/@tu-cuenta" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Horarios -->
+      <div class="settings__section card">
+        <h2>Horarios de Atención</h2>
+        <div class="settings__horarios">
+          <div class="horario-row">
+            <span class="horario-day">Lunes</span>
+            <span class="badge badge-danger" style="font-size: 0.75rem;">Cerrado</span>
+          </div>
+          @for (day of [
+            { key: 'martes',    label: 'Martes' },
+            { key: 'miercoles', label: 'Miércoles' },
+            { key: 'jueves',    label: 'Jueves' },
+            { key: 'viernes',   label: 'Viernes' },
+            { key: 'sabado',    label: 'Sábado' },
+            { key: 'domingo',   label: 'Domingo' }
+          ]; track day.key) {
+            <div class="horario-row">
+              <span class="horario-day">{{ day.label }}</span>
+              <input type="time" [formControlName]="day.key + '_apertura'" />
+              <span class="horario-sep">–</span>
+              <input type="time" [formControlName]="day.key + '_cierre'" />
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Colores -->
+      <div class="settings__section card">
+        <h2>Identidad Visual</h2>
+        <div class="settings__colors">
+          <div class="color-picker">
+            <label>Color Primario</label>
+            <div class="color-picker__input">
+              <input type="color" formControlName="colorPrimario" />
+              <span>{{ form.value.colorPrimario }}</span>
+            </div>
+          </div>
+          <div class="color-picker">
+            <label>Color Secundario (Dorado)</label>
+            <div class="color-picker__input">
+              <input type="color" formControlName="colorSecundario" />
+              <span>{{ form.value.colorSecundario }}</span>
+            </div>
+          </div>
+          <div class="color-picker">
+            <label>Color Acento</label>
+            <div class="color-picker__input">
+              <input type="color" formControlName="colorAcento" />
+              <span>{{ form.value.colorAcento }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEO -->
+      <div class="settings__section card">
+        <h2>SEO y Meta Tags</h2>
+        <div class="settings__grid">
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Meta Descripción</label>
+            <textarea formControlName="metaDescripcion" rows="2" placeholder="Descripción para Google (160 caracteres)"></textarea>
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>Meta Keywords</label>
+            <input type="text" formControlName="metaKeywords" placeholder="restaurante CDMX, bar, reservar mesa..." />
+          </div>
+        </div>
+      </div>
+
+      <!-- Save -->
+      <div class="settings__actions">
+        @if (saved()) {
+          <span class="badge badge-success" style="padding: 0.75rem 1.25rem; font-size: 0.875rem;">✅ Cambios guardados</span>
+        }
+        <button type="submit" class="btn btn-primary btn-lg" [disabled]="saving()">
+          {{ saving() ? 'Guardando...' : 'Guardar Configuración' }}
+        </button>
+      </div>
+
+    </form>
+  }
+</div>

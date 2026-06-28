@@ -1,0 +1,139 @@
+<div class="dashboard">
+  <div class="dashboard__header">
+    <h1>Dashboard</h1>
+    <p>Resumen del negocio</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="dashboard__stats">
+    <div class="stat-card card">
+      <div class="stat-card__icon">📅</div>
+      <div class="stat-card__content">
+        <span class="stat-card__value">{{ stats()?.total ?? '–' }}</span>
+        <span class="stat-card__label">Total Reservas</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card--warning card">
+      <div class="stat-card__icon">⏳</div>
+      <div class="stat-card__content">
+        <span class="stat-card__value">{{ stats()?.pendientes ?? '–' }}</span>
+        <span class="stat-card__label">Pendientes</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card--success card">
+      <div class="stat-card__icon">✅</div>
+      <div class="stat-card__content">
+        <span class="stat-card__value">{{ stats()?.confirmadas ?? '–' }}</span>
+        <span class="stat-card__label">Confirmadas</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card--gold card">
+      <div class="stat-card__icon">🍽️</div>
+      <div class="stat-card__content">
+        <span class="stat-card__value">{{ totalProducts() }}</span>
+        <span class="stat-card__label">Productos Activos</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card--accent card">
+      <div class="stat-card__icon">⭐</div>
+      <div class="stat-card__content">
+        <span class="stat-card__value">{{ featuredProducts() }}</span>
+        <span class="stat-card__label">Productos Destacados</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card--info card">
+      <div class="stat-card__icon">📆</div>
+      <div class="stat-card__content">
+        <span class="stat-card__value">{{ stats()?.hoy ?? '–' }}</span>
+        <span class="stat-card__label">Reservas Próximas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Reservations -->
+  <div class="dashboard__section card">
+    <div class="dashboard__section-header">
+      <h2>Reservaciones Recientes</h2>
+      <a routerLink="/admin/reservas" class="btn btn-ghost btn-sm">Ver todas</a>
+    </div>
+
+    @if (loading()) {
+      <div class="dashboard__loading">
+        @for (i of [1,2,3]; track i) {
+          <div class="skeleton" style="height: 56px; margin-bottom: 0.5rem; border-radius: 8px;"></div>
+        }
+      </div>
+    } @else if (recentReservations().length === 0) {
+      <div class="dashboard__empty">
+        <span>📅</span>
+        <p>No hay reservaciones aún</p>
+      </div>
+    } @else {
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Personas</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of recentReservations(); track r.id) {
+              <tr>
+                <td>
+                  <div class="table-client">
+                    <strong>{{ r.nombreCliente }}</strong>
+                    <small>{{ r.telefono }}</small>
+                  </div>
+                </td>
+                <td>{{ r.fecha | date:'dd/MM/yyyy' }}</td>
+                <td>{{ r.hora }}</td>
+                <td>{{ r.personas }} pax</td>
+                <td>
+                  <span class="badge" [class]="getStatusClass(r.estado)">
+                    {{ getStatusLabel(r.estado) }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="dashboard__quick">
+    <h2>Acciones Rápidas</h2>
+    <div class="dashboard__quick-grid">
+      <a routerLink="/admin/menu" class="quick-action card">
+        <span>🍽️</span>
+        <strong>Agregar Producto</strong>
+        <small>Añade un nuevo platillo al menú</small>
+      </a>
+      <a routerLink="/admin/reservas" class="quick-action card">
+        <span>📅</span>
+        <strong>Ver Reservas</strong>
+        <small>Administra las reservaciones</small>
+      </a>
+      <a routerLink="/admin/configuracion" class="quick-action card">
+        <span>⚙️</span>
+        <strong>Configuración</strong>
+        <small>Edita los datos del restaurante</small>
+      </a>
+      <a routerLink="/" target="_blank" class="quick-action card">
+        <span>🌐</span>
+        <strong>Ver Sitio</strong>
+        <small>Cómo ven los clientes tu página</small>
+      </a>
+    </div>
+  </div>
+</div>
